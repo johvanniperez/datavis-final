@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<!-- Create a div where the graph will take place -->
+<div id="my_dataviz"></div>
+<p>
+  Text filter: <div id="vis-container"></div>
+</p>
+
+<script>
+
+function freqs(data, text){
+  frequencies = []
+  i = 0
+  len = 0
+  if(text == 1){i = 3; len = 10}
+  if(text == 2){i = 10; len = 17}
+  if(text == 3){i = 17; len = 24}
+
+  groups = data.columns.slice(i, len)
+
+  console.log(i, len)
+  // Iterate through all wordcloud columns
+  for (i; i < len; i++){
+    console.log(i)
+    // Get column (all grades for one wordcloud)
+    col = data.map(d => d[Object.keys(d)[i]])
+
+    // Count how many of each grade are there
+    f1 = col.filter(x => x == 1).length
+    f2 = col.filter(x => x == 2).length
+    f3 = col.filter(x => x == 3).length
+    f4 = col.filter(x => x == 4).length
+    f5 = col.filter(x => x == 5).length
+
+    // Create a list to hold the grade counts and append it to frequencies
+    fs = [data.columns[i], f1, f2, f3, f4, f5]
+    frequencies.push(fs)
+  }
+
+  frequencies = frequencies.map(function(x) {
+    return {
+      "wordcloud": x[0],
+      "1": x[1],
+      "2": x[2],
+      "3": x[3],
+      "4": x[4],
+      "5": x[5],
+    }
+  })
+
+  return [frequencies, groups]
+}
+
+
+d3.csv("cleanedSurvey.csv", function(data) {
+  console.log(data)
+
+  // Get the frequencies and the groups for text 1, 2, or 3
+  freq_res = freqs(data, 1)
+  frequencies = freq_res[0]
+  groups = freq_res[1]
+
+
+  // Create a tooltip to display data
+  var tooltip = d3.select("#my_dataviz")
+  .append("div")
+  .style("position", "absolute")
+  .style("visibility", "hidden")
+  .style("background-color", "white")
+  .style("border", "solid")
+  .style("border-width", "1px")
+  .style("border-radius", "5px")
+  .style("padding", "4px")
+
+  console.log(frequencies)
+
+  makeVis(data, frequencies, groups, tooltip)
+});
+
+var makeVis = function(data, frequencies, groups, tooltip) {
+  var subgroups = ['1', '2', '3', '4', '5']
+  let colors = ['#e2dbe9','#cec9d6','#bcaecc', '#5a4565', '#3e204f']
+
+  // set the dimensions and margins of the graph
+  var margin = {top: 10, right: 30, bottom: 50, left: 50},
+  width = 800 - margin.left - margin.right,
+  height = 400 - margin.top - margin.bottom;
+
+  // append the svg object to the body of the page
+  var svg = d3.select("#my_dataviz")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform",
+  "translate(" + margin.left + "," + margin.top + ")");
+
+  svg.append("text")
+  .attr("x", (width / 2))
+  .attr("y", 0 + (margin.top))
+  .attr("text-anchor", "middle")
+  .style("font-size", "24px")
+  .text("Distribution of Ratings for Different Wordcloud Visualizations");
+
+  svg.append("circle").attr("cx",width*0.9).attr("cy",0.15*height).attr("r", 6).style("fill", colors[0])
+  svg.append("circle").attr("cx",width*0.9).attr("cy",0.20*height).attr("r", 6).style("fill", colors[1])
+  svg.append("circle").attr("cx",width*0.9).attr("cy",0.25*height).attr("r", 6).style("fill", colors[2])
+  svg.append("circle").attr("cx",width*0.9).attr("cy",0.30*height).attr("r", 6).style("fill", colors[3])
+  svg.append("circle").attr("cx",width*0.9).attr("cy",0.35*height).attr("r", 6).style("fill", colors[4])
+
+  svg.append("text").attr("x", width*0.92).attr("y", 0.15*height).text("Rating of 1").style("font-size", "15px").attr("alignment-baseline","middle")
+  svg.append("text").attr("x", width*0.92).attr("y", 0.20*height).text("Rating of 2").style("font-size", "15px").attr("alignment-baseline","middle")
+  svg.append("text").attr("x", width*0.92).attr("y", 0.25*height).text("Rating of 3").style("font-size", "15px").attr("alignment-baseline","middle")
+  svg.append("text").attr("x", width*0.92).attr("y", 0.30*height).text("Rating of 4").style("font-size", "15px").attr("alignment-baseline","middle")
+  svg.append("text").attr("x", width*0.92).attr("y", 0.35*height).text("Rating of 5").style("font-size", "15px").attr("alignment-baseline","middle")
+
+  // Add X axis
+  var x = d3.scaleBand()
+  .domain(groups)
+  .range([0, width])
+  .padding([0.2])
+  svg.append("g")
+  .attr("transform", "translate(0," + height + ")")
+  .call(d3.axisBottom(x).tickSize(0));
+
+  // Add Y axis
+  var y = d3.scaleLinear()
+  .domain([0, 20])
+  .range([ height, 0 ]);
+  svg.append("g")
+  .call(d3.axisLeft(y));
+
+  // Another scale for subgroup position?
+  var xSubgroup = d3.scaleBand()
+  .domain(subgroups)
+  .range([0, x.bandwidth()])
+  .padding([0.05])
+
+  // color palette = one color per subgroup
+  var color = d3.scaleOrdinal()
+  .domain(subgroups)
+  .range(colors)
+
+  // Show the bars
+  svg.append("g")
+  .selectAll("g")
+  // Enter in data = loop group per group
+  .data(frequencies)
+  .enter()
+  .append("g")
+  .attr("transform", function(d) {console.log(d.wordcloud); return "translate(" + x(d.wordcloud) + ",0)"; })
+  .selectAll("rect")
+  .data(function(d) { return subgroups.map(function(key) { return {key: key, value: d[key]}; }); })
+  .enter().append("rect")
+  .attr("x", function(d) { return xSubgroup(d.key); })
+  .attr("y", function(d) { return y(d.value); })
+  .attr("width", xSubgroup.bandwidth())
+  .attr("height", function(d) { return height - y(d.value); })
+  .attr("fill", function(d) { return color(d.key); });
+
+  var updateBars = function(frequencies, groups) {
+
+    svg.selectAll("rect").remove();
+    svg.selectAll("g").remove();
+
+    // Add X axis
+    var x = d3.scaleBand()
+    .domain(groups)
+    .range([0, width])
+    .padding([0.2])
+    svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x).tickSize(0));
+
+    // Add Y axis
+    var y = d3.scaleLinear()
+    .domain([0, 20])
+    .range([ height, 0 ]);
+    svg.append("g")
+    .call(d3.axisLeft(y));
+
+    svg.append('g')
+    .attr('transform', 'translate(' + -30 + ', ' + height/2 + ')')
+    .append('text')
+    .attr('text-anchor', 'middle')
+    .attr('transform', 'rotate(-90)')
+    .text('Number of Ratings');
+
+    svg.append('g')
+    .attr('transform', 'translate(' + width / 2 + ', ' + height*1.1 + ')')
+    .append('text')
+    .attr('text-anchor', 'middle')
+    .text('Wordcloud Type');
+
+    var subgroups = ['1', '2', '3', '4', '5']
+
+    svg.append("g")
+    .selectAll("g")
+    // Enter in data = loop group per group
+    .data(frequencies)
+    .enter()
+    .append("g")
+    .attr("transform", function(d) {console.log(d.wordcloud); return "translate(" + x(d.wordcloud) + ",0)"; })
+    .selectAll("rect")
+    .data(function(d) { return subgroups.map(function(key) { return {key: key, value: d[key]}; }); })
+    .enter().append("rect")
+    .attr("x", function(d) { return xSubgroup(d.key); })
+    .attr("y", function(d) { return y(d.value); })
+    .attr("width", xSubgroup.bandwidth())
+    .attr("height", function(d) { return height - y(d.value); })
+    .attr("fill", function(d) { return color(d.key); })
+
+    // Mouseover effect
+    // Make bar stand out and show tooltip
+    .on('mouseover', function(event, d) {
+      d3.select(this).transition()
+        .duration('50')
+        .attr('stroke', 'black')
+        .attr('stroke-width', 2)
+      tooltip.style('visibility', 'visible')
+    })
+
+    // Give tooltip its position and data
+    .on('mousemove', function(d) {
+      tooltip
+        .html(`${d.value} ratings of ${d.key} `)
+        .style('font-size', '15px')
+        .style("left", (d3.event.pageX + 20) + "px")
+        .style("top", d3.event.pageY + "px")
+    })
+
+    // Return to previous state when leaving
+    .on('mouseleave', function(event, d) {
+      d3.select(this).transition()
+          .duration('50')
+          .attr('stroke', 'none')
+      tooltip.style('visibility', 'hidden')
+    })
+  };
+
+  // Handler for dropdown value change
+  var dropdownChange = function() {
+    var newtext = d3.select(this).property('value'),
+    freq_res = freqs(data, newtext)
+    newfrequencies = freq_res[0]
+    newgroups = freq_res[1]
+
+    updateBars(newfrequencies, newgroups);
+  };
+
+  // Get names of cereals, for dropdown
+  var texts = [1, 2, 3]
+
+  var dropdown = d3.select("#vis-container")
+  .insert("select", "svg")
+  .on("change", dropdownChange);
+
+  dropdown.selectAll("option")
+  .data(texts)
+  .enter().append("option")
+  .attr("value", function (d) { return d; })
+  .text(d => d)
+
+  updateBars(frequencies, groups);
+};
+</script>
