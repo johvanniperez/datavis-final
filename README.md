@@ -8,4 +8,4 @@ Link to nicepage website & project video
 ---
 https://site134581.nicepage.io/
 
-https://github.com/johvanniperez/datavis-final
+https://youtu.be/lqQi5O8YPhk
