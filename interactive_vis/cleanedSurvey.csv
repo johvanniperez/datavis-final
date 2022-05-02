@@ -1,0 +1,23 @@
+major,gender,language,Horizontal_1,Bar_1,Vertical_1,Downhill_1,Normal_1,Color_1,Uphill_1,Horizontal_2,Bar_2,Vertical_2,Downhill_2,Normal_2,Color_2,Uphill_2,Horizontal_3,Bar_3,Vertical_3,Downhill_3,Normal_3,Color_3,Uphill_3
+Life Sciences,Woman,Spanish,2,1,3,3,5,3,5,3,1,3,3,4,4,5,4,2,3,4,4,4,4
+Life Sciences,Man,French,2,2,1,2,5,3,2,2,2,1,2,5,4,2,2,2,1,2,5,4,1
+Life Sciences,Man,English,3,1,2,4,5,5,4,3,1,2,3,4,4,3,2,4,3,3,4,5,3
+Math/Physics,Nonbinary,English,3,2,4,3,5,5,3,4,2,2,3,4,5,5,3,2,2,3,5,5,4
+Life Sciences,Woman,French,1,2,1,1,4,3,1,1,2,1,1,4,2,1,1,3,1,1,4,3,1
+Business/Humanities,Woman,English,4,1,2,3,5,5,3,2,2,1,3,5,5,4,2,1,3,2,5,5,3
+Computer Science,Woman,Other,3,3,1,2,4,4,2,2,3,1,2,5,4,2,3,3,1,2,5,5,2
+Engineering,Man,English,4,1,2,3,5,5,4,3,2,2,2,5,5,3,4,1,3,2,4,5,4
+Life Sciences,Woman,English,2,1,1,2,5,5,3,3,2,2,3,5,4,3,2,3,2,3,4,5,4
+Business/Humanities,Man,Other,3,2,1,2,5,5,2,3,2,1,2,5,5,2,2,3,1,2,5,5,2
+Computer Science,Man,English,3,2,2,3,4,5,3,2,3,2,4,5,4,3,2,1,1,3,4,4,3
+Computer Science,Woman,English,2,3,4,1,5,2,1,5,1,3,5,4,1,3,2,2,1,5,3,4,2
+Computer Science,Man,Other,2,4,2,2,5,4,2,3,4,2,2,5,5,3,3,4,1,2,5,5,2
+Math/Physics,Nonbinary,Portugese,2,2,4,3,3,1,5,1,1,3,1,1,2,4,2,3,5,2,2,2,4
+Engineering,Man,English,3,2,5,3,4,2,1,3,2,5,5,4,3,2,5,5,3,4,2,4,3
+Business/Humanities,Woman,English,3,2,2,5,4,3,3,5,3,3,4,3,3,1,4,4,4,3,3,3,5
+Engineering,Woman,English,2,3,1,2,4,4,2,2,3,1,2,5,4,3,2,4,1,2,5,5,2
+Life Sciences,Man,Spanish,3,2,4,4,2,4,4,2,2,2,4,5,4,4,3,3,2,5,2,1,1
+Engineering,Woman,Portugese,3,3,1,2,4,4,2,1,2,1,2,5,4,3,2,4,1,2,5,3,3
+Computer Science,Man,English,3,4,4,2,3,1,1,5,4,3,2,2,1,3,4,3,2,1,2,1,2
+Business/Humanities,Woman,French,3,3,3,2,5,2,1,4,1,1,3,2,2,3,4,3,2,2,4,3,2
+Life Sciences,Man,English,1,2,1,1,5,4,1,1,2,1,1,5,4,1,1,3,1,1,4,5,1
